@@ -1,66 +1,32 @@
-(setq header-line-format
-      (concat (propertize " " 'display '((space :align-to 0)))
-              ""))
+(defmacro defcontent (ctx &rest props)
+  "\
 
-(defmacro with-face (str &rest properties)                                                                     
-  `(propertize ,str 'face (list ,@properties)))                                                              
-(setq mode-line-format
-      (list
-       ;; value of `mode-name'
-       "%m: "
-       ;; value of current buffer name
-       "%b, "
-       ;;
-       "%m, %[ %] "
-       ;; value of current line number
-       "|%l%%%c| "
-       "-- user: "
-       ;;(insert-image (create-image "f:/mE/Frontend/Image/Icon/android-icon.svg"))
-       (with-face "\ue603"
-		  ;; :background "green"
-		  :foreground "#BFAB68"
-		  :family "Iconfont"
-		  :weight 'bold
-		  :height 200
-                  ;;:foreground "#81b280"
-                  )
-       (with-face "\ue607"
-		  ;; :background "green"
-		  :foreground "#6C2B23"
-		  :family "Iconfont"
-		  :weight 'bold
-		  :height 200
-                  ;;:foreground "#81b280"
-                  )
-       (with-face "\ue606"
-		  ;; :background "green"
-		  :foreground "#555555"
-		  :family "Iconfont"
-		  :weight 'bold
-		  :height 200
-                  ;;:foreground "#81b280"
-                  )
-       (with-face "\ue605"
-		  ;; :background "green"
-		  :foreground "#F588AF"
-		  :family "Iconfont"
-		  :weight 'bold
-		  :height 200
-                  ;;:foreground "#81b280"
-                  )
-       "-- user: "
-       ;; value of user
-       (getenv "USER")))
+Propertize text face. 
+
+"
+  `(propertize ,ctx 'face ,@props))
 
 
-(set-face-attribute 'mode-line nil
-		    :background "#101010"
-		    :foreground "#337399"
-		    :box nil
-		    )
+(defun buffer-status ()
+  "\
 
-(set-background-color "#101010")
+Buffer Modified.
 
+buffer-read-only define the buffer readable
+buffer-modified-p get buffer is modified
 
-;; #1d2025
-;; #20242d
+"
+
+  (defcontent "\u25cf"
+    (let ((modi? (buffer-modified-p))
+	  (read? buffer-read-only))
+      
+      (if read?
+	  ;; red
+	  (list :foreground "#e85085")
+	(if modi?
+	  ;; yellow
+	  (list :foreground "#E9A621")
+	  ;; purple
+	  (list :foreground "#a1779b"))))))
+
