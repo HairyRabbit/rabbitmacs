@@ -16,7 +16,6 @@ buffer-read-only define the buffer readable
 buffer-modified-p get buffer is modified
 
 "
-
   (defcontent "\u25cf"
     (let ((modi? (buffer-modified-p))
 	  (read? buffer-read-only))
