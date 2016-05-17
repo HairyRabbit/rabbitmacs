@@ -15,6 +15,7 @@
 (require 'cl)
 (require 'dash)
 (require 's)
+
 ;;(require 'mode-line-buffer-status)
 ;;(require 'mode-line-buffer-size)
 ;;(require 'mode-line-buffer-name)
@@ -78,9 +79,9 @@ Define buffer status, Its a (flag data) tuple.
 * 1 - modified
 * 2 - saved
 "
-  (list '(0 rabbit/color-buffer-status-readonly)
-	'(1 rabbit/color-buffer-status-modified)
-	'(2 rabbit/color-buffer-status-saved)))
+  (list (list 0 rabbit/color-buffer-status-readonly)
+	(list 1 rabbit/color-buffer-status-modified)
+	(list 2 rabbit/color-buffer-status-saved)))
 
 
 (defun rabbit/to-buffer-status-flag ()
@@ -133,11 +134,42 @@ Render buffer status.
 
 ;; Buffer Size.
 
+(defvar rabbit/content-buffer-size "%I")
+(defvar rabbit/color-buffer-size "#fff")
+
+(defun rabbit/buffer-size ()
+  "\
+Define buffer size data, contianer the color.
+"
+  (list rabbit/color-buffer-size))
+
+(defun rabbit/make-buffer-size-prop (n)
+  "\
+Merge buffer size content and data, produce a prop.
+"
+  (list rabbit/content-buffer-size
+	(list :foreground (car n)
+	      :family "Crystal"
+	      :height 160)))
+
+(defun rabbit/format-buffer-size (prop)
+  "\
+Padding whitespace. like '10.1k'.
+"
+  (s-pad-left 4 " " prop))
+
 (defun rabbit/render-buffer-size-format ()
   "\
+Render buffer size.
 "
-  
-  )
+  (->> (rabbit/buffer-size)
+       (rabbit/to-prop 'rabbit/make-buffer-size-prop)
+       (rabbit/format-buffer-size)))
+
+
+;; Major Mode and Minor Mode
+
+
 
 
 
@@ -155,10 +187,10 @@ Render buffer status.
   (let ((state (list buffer-read-only
 		     (buffer-modified-p))))
     
-    (list (s-pad-left 4 " " (rabbit/buffer-size)) ;; buffer size
-	  (rabbit/render-buffer-status-format) ;; buffer state
-	  (rabbit/buffer-name) ;; buffer name
-	  (s-pad-left 3 " "  (rabbit/make-mode-prop)) ;; major-mode
+    (list (rabbit/render-buffer-size-format)
+	  (rabbit/render-buffer-status-format)
+	  ;;(rabbit/buffer-name) ;; buffer name
+	  ;;(s-pad-left 3 " "  (rabbit/make-mode-prop)) ;; major-mode
 	  )
     )
   )
@@ -167,10 +199,7 @@ Render buffer status.
 
 (defun rabbit/make-mode-line-format ()
   (setq mode-line-format
-	'("%e"
-	  (:eval
-	   (rabbit/make-format)
-	   ))
+	'("%e" (:eval (rabbit/make-format)))
 	)
   )
 
@@ -178,8 +207,6 @@ Render buffer status.
 		    :background "#000F14"
 		    :foreground "#d5d5ff"
 		    :box nil
-		    :width 'expanded
-		    :weight 'normal
 		    :height 100
 		    )
 
@@ -187,7 +214,47 @@ Render buffer status.
 
 
 (set-background-color "#000f14")
-(set-cursor-color "#00f")
+(set-cursor-color "#81618A")
+(set-face-attribute 'font-lock-function-name-face nil
+		    :foreground "#d5d5ff"
+		    :weight 'bold
+		    ;; pink "#81618A"
+		    )
+(set-face-attribute 'font-lock-keyword-face nil
+		    :foreground "#81618A"
+		    ;;:weight 'bold
+		    ) ;;#2B687B ;;#BFF8FF
+(set-face-attribute 'font-lock-comment-face nil
+		    :foreground "#888"
+		    :background nil)
+(set-face-attribute 'font-lock-comment-delimiter-face nil
+		    :foreground "#555"
+		    :background nil)
+(set-face-attribute 'font-lock-variable-name-face nil
+		    :foreground "#d5d5ff"
+		    )
+(set-face-attribute 'font-lock-string-face nil
+		    :foreground "#e85085" ;;"#e85085" ;; "#BC4545"
+		    ;;:height 136
+		    ;; pink "#81618A"
+		    )
+(set-face-attribute 'font-lock-builtin-face nil
+		    :foreground "#B97CF9"
+		    )
+
+(set-face-attribute 'font-lock-constant-face nil
+		    :foreground "#9947EF"
+		    )
+
+(set-face-attribute 'font-lock-type-face nil
+		    :foreground "#d5d5ff"
+		    )
+
+(set-face-attribute 'font-lock-warning-face nil
+		    :foreground "#d5d5ff"
+		    )
+
+
 
 (rabbit/make-mode-line-format)
 ;;(setq fill-num t)
