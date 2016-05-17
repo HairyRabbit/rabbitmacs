@@ -1,29 +1,43 @@
 ;; -*- mode: emacs-lisp -*-
 ;; -*- coding: utf-8 -*-
 
+(require 'cl)
 (require 'dash)
 
-(defconst langs-icon '((("js") "\ue608")
-		       (("Emacs-Lisp" "Lisp Interaction") "\ue608")
+(defconst langs-icon '((("js") "\ue60a")
+		       (("Emacs-Lisp" "Lisp Interaction") "\ue60a")
 		       )
   ""
   )
 
 
-(defun rabbit/major-mode ()
-  "\
-Main call.
-"
+(defvar rabbit-major-mode-size 200 "")
+(defvar rabbit-minor-mode-size 150 "")
+
+(defun rabbit/make-mode-icon (size)
+  (lexical-let ((size size))
+    (lambda (str icon)
+      (let ((face (list :foreground icon
+			:family "Iconfont"
+			:height size)))
+	(propertize str 'face face)))))
+
+
+(defun rabbit/make-major-mode-icon (size icon)
+  (funcall (rabbit/make-mode-icon rabbit-major-mode-size) size icon))
+
+
+(defun rabbit/make-minor-mode-icon (str icon)
+  (funcall (rabbit/make-mode-icon rabbit-minor-mode-size) size icon))
+
+
+(defun rabbit/make-mode-prop ()
   (->> mode-name
        (rabbit/mam/pick-langs langs-icon)
        (rabbit/mam/pick-ctx)
        (rabbit/mam/to-prop)
-       )
-  ;;(propertize buffer-name-text 'face (list :weight 'bold))
-  )
+       ))
 
-
-;;(rabbit/major-mode)
 
 (defun rabbit/mam/pick-langs (langs name)
   (-filter (lambda (x)
@@ -36,9 +50,7 @@ Main call.
 
 (defun rabbit/mam/to-prop (ctxs)
   (let ((ctx (-first-item ctxs)))
-    (propertize ctx 'face (list :foreground "#BFAB68"
-				:family "Iconfont"
-				:height 300))))
-
+    (rabbit/make-major-mode-icon "\ue60a" "#7e58b5")
+    ))
 
 (provide 'mode-line-major-mode)
