@@ -16,11 +16,7 @@
 (require 'dash)
 (require 's)
 
-;;(require 'mode-line-buffer-status)
-;;(require 'mode-line-buffer-size)
-;;(require 'mode-line-buffer-name)
-;;(require 'mode-line-major-mode)
-
+;; Utils.
 
 (defun rabbit/pick-curr (filter list)
   "\
@@ -172,10 +168,46 @@ Render buffer size.
        (rabbit/format-buffer-size)))
 
 
-;; Major Mode and Minor Mode
+;; Buffer Name.
+
+(defvar rabbit/content-buffer-name "%b")
+
+
+(defun rabbit/buffer-name ()
+  "\
+Buffer name datas. Its nothing.
+"
+  '())
+
+
+(defun rabbit/make-buffer-name-prop (n)
+  "\
+Merge content and props.
+"
+  (list rabbit/content-buffer-name '(:weight 'bold)))
+
+
+(defun rabbit/format-buffer-name (prop)
+  "\
+Format buffer name content.
+"
+  prop)
+
+
+(defun rabbit/render-buffer-name-format ()
+  "\
+Render buffer name.
+"
+  (->> (rabbit/buffer-name)
+       (rabbit/to-prop 'rabbit/make-buffer-name-prop)
+       (rabbit/format-buffer-name)
+       ))
+
+
+;; Major Mode and Minor Mode.
 
 (defvar rabbit/lang-js '("\ue60a" "#7e58b5"))
-(defvar rabbit/lang-elisp '("\ue60a" "#9947EF"))
+(defvar rabbit/lang-elisp '("\ue60a" "#7e58b5"))
 
 (defun rabbit/major-mode ()
   (list (list '("js") rabbit/lang-js)
@@ -194,11 +226,11 @@ Render buffer size.
 	  (list :foreground (cadr data)
 		:family "Iconfont"
 		:height 200
-		))))
+ 		))))
 
 
 (defun rabbit/format-major-mode (prop)
-  prop)
+  (s-pad-left 3 " " prop))
 
 
 (defun rabbit/render-major-mode-format ()
@@ -218,16 +250,14 @@ Render buffer size.
 
 
 
-
-
 (defun rabbit/make-format ()
   (let ((state (list buffer-read-only
 		     (buffer-modified-p))))
     
     (list (rabbit/render-buffer-size-format)
 	  (rabbit/render-buffer-status-format)
+	  (rabbit/render-buffer-name-format)
 	  (rabbit/render-major-mode-format)
-	  ;;(s-pad-left 3 " "  (rabbit/make-mode-prop)) ;; major-mode
 	  )
     )
   )
