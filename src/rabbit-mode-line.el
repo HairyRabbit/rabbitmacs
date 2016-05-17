@@ -225,7 +225,7 @@ Render buffer name.
     (list (car data)
 	  (list :foreground (cadr data)
 		:family "Iconfont"
-		:height 200
+		:height 300
  		))))
 
 
@@ -238,37 +238,39 @@ Render buffer name.
        (rabbit/pick-curr 'rabbit/filter-mode)
        (rabbit/pick-data)
        (rabbit/to-prop 'rabbit/make-major-mode-prop)
-       (rabbit/format-major-mode)
+       (rabbit/format-major-mode)       
        ))
 
 
+;; Minor Mode.
 
 
 
 
 
+;; Main Call.
+
+(defun rabbit/render-content ()
+  "\
+Concat all contents.
+"
+  (list (rabbit/render-buffer-size-format)
+	(rabbit/render-buffer-status-format)
+	(rabbit/render-buffer-name-format)
+	(rabbit/render-major-mode-format)
+	minor-mode-alist
+	;;yas Rbow
+	))
 
 
-
-(defun rabbit/make-format ()
-  (let ((state (list buffer-read-only
-		     (buffer-modified-p))))
-    
-    (list (rabbit/render-buffer-size-format)
-	  (rabbit/render-buffer-status-format)
-	  (rabbit/render-buffer-name-format)
-	  (rabbit/render-major-mode-format)
-	  )
-    )
-  )
-
-
-
-(defun rabbit/make-mode-line-format ()
+(defun rabbit/main-mode-line ()
+  "\
+Change mode line format.
+"
   (setq mode-line-format
-	'("%e" (:eval (rabbit/make-format)))
-	)
-  )
+	'("%e" (:eval (rabbit/render-content)))))
+
+(rabbit/main-mode-line)
 
 (set-face-attribute 'mode-line nil
 		    :background "#000F14"
@@ -323,7 +325,7 @@ Render buffer name.
 
 
 
-(rabbit/make-mode-line-format)
+
 ;;(setq fill-num t)
 ;;(print mode-line-process)
 
