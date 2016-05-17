@@ -71,6 +71,7 @@ sig :: [Data] -> Prop
 (defvar rabbit/color-buffer-status-saved "#a1779b")
 (defvar rabbit/content-buffer-status "\u25cf")
 
+
 (defun rabbit/buffer-status ()
   "\
 Define buffer status, Its a (flag data) tuple.
@@ -137,11 +138,13 @@ Render buffer status.
 (defvar rabbit/content-buffer-size "%I")
 (defvar rabbit/color-buffer-size "#fff")
 
+
 (defun rabbit/buffer-size ()
   "\
 Define buffer size data, contianer the color.
 "
   (list rabbit/color-buffer-size))
+
 
 (defun rabbit/make-buffer-size-prop (n)
   "\
@@ -152,11 +155,13 @@ Merge buffer size content and data, produce a prop.
 	      :family "Crystal"
 	      :height 160)))
 
+
 (defun rabbit/format-buffer-size (prop)
   "\
 Padding whitespace. like '10.1k'.
 "
   (s-pad-left 4 " " prop))
+
 
 (defun rabbit/render-buffer-size-format ()
   "\
@@ -169,8 +174,40 @@ Render buffer size.
 
 ;; Major Mode and Minor Mode
 
+(defvar rabbit/lang-js '("\ue60a" "#7e58b5"))
+(defvar rabbit/lang-elisp '("\ue60a" "#9947EF"))
+
+(defun rabbit/major-mode ()
+  (list (list '("js") rabbit/lang-js)
+	(list '("Emacs-Lisp" "Lisp Interaction") rabbit/lang-elisp)
+	))
 
 
+(defun rabbit/filter-mode (n)
+  (-contains? (-first-item n) mode-name)
+  )
+
+
+(defun rabbit/make-major-mode-prop (n)
+  (let ((data (car n)))
+    (list (car data)
+	  (list :foreground (cadr data)
+		:family "Iconfont"
+		:height 200
+		))))
+
+
+(defun rabbit/format-major-mode (prop)
+  prop)
+
+
+(defun rabbit/render-major-mode-format ()
+  (->> (rabbit/major-mode)
+       (rabbit/pick-curr 'rabbit/filter-mode)
+       (rabbit/pick-data)
+       (rabbit/to-prop 'rabbit/make-major-mode-prop)
+       (rabbit/format-major-mode)
+       ))
 
 
 
@@ -189,7 +226,7 @@ Render buffer size.
     
     (list (rabbit/render-buffer-size-format)
 	  (rabbit/render-buffer-status-format)
-	  ;;(rabbit/buffer-name) ;; buffer name
+	  (rabbit/render-major-mode-format)
 	  ;;(s-pad-left 3 " "  (rabbit/make-mode-prop)) ;; major-mode
 	  )
     )
