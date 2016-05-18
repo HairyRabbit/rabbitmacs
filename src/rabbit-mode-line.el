@@ -204,7 +204,7 @@ Render buffer name.
        ))
 
 
-;; Major Mode and Minor Mode.
+;; Major Mode.
 
 (defvar rabbit/lang-js '("\ue60a" "#7e58b5"))
 (defvar rabbit/lang-elisp '("\ue60a" "#7e58b5"))
@@ -216,8 +216,7 @@ Render buffer name.
 
 
 (defun rabbit/filter-mode (n)
-  (-contains? (-first-item n) mode-name)
-  )
+  (-contains? (-first-item n) mode-name))
 
 
 (defun rabbit/make-major-mode-prop (n)
@@ -225,7 +224,7 @@ Render buffer name.
     (list (car data)
 	  (list :foreground (cadr data)
 		:family "Iconfont"
-		:height 300
+		:height 200
  		))))
 
 
@@ -238,13 +237,62 @@ Render buffer name.
        (rabbit/pick-curr 'rabbit/filter-mode)
        (rabbit/pick-data)
        (rabbit/to-prop 'rabbit/make-major-mode-prop)
-       (rabbit/format-major-mode)       
+       (rabbit/format-major-mode)
        ))
 
 
 ;; Minor Mode.
 
+(defvar rabbit/content-minor-mode-yasnippet '(yas-minor-mode ("\ue60c" "#00bfff")))
+(defvar rabbit/content-minor-mode-rainbow '(rainbow-mode ("\ue60b" "#ffa500")))
 
+
+(defun rabbit/minor-mode ()
+  "\
+Defind replaced contents.
+"
+  (list rabbit/content-minor-mode-yasnippet
+	rabbit/content-minor-mode-rainbow
+	))
+
+
+(defun rabbit/make-minor-mode-prop (prop)
+  "\
+Merge content and faces.
+"
+  (let ((data (car prop)))
+  (list (car data)
+	(list :foreground (cadr data)
+	      :family "Iconfont"
+	      :height 120))
+  ))
+
+
+(defun rabbit/format-minor-mode (prop)
+  "\
+Padding left and right.
+"
+  (s-center 2 prop))
+
+
+(defun rabbit/replace-minor-display (pair)
+  "\
+Replace contents.
+"
+  (let* ((name (car pair))
+	 (res (assoc-default name (rabbit/minor-mode))))
+    (if res (list name
+		  (->> res
+		       (rabbit/to-prop 'rabbit/make-minor-mode-prop)
+		       (rabbit/format-minor-mode)))
+      pair)))
+
+
+(defun rabbit/render-minor-mode-format ()
+  "\
+Render minor mode content.
+"
+  (-map 'rabbit/replace-minor-display minor-mode-alist))
 
 
 
@@ -258,8 +306,7 @@ Concat all contents.
 	(rabbit/render-buffer-status-format)
 	(rabbit/render-buffer-name-format)
 	(rabbit/render-major-mode-format)
-	minor-mode-alist
-	;;yas Rbow
+	(rabbit/render-minor-mode-format)
 	))
 
 
