@@ -296,6 +296,27 @@ Render minor mode content.
 
 
 
+;; Date & Time.
+;; Page Scroller.
+
+(defun rabbit/render-scroller-format ()
+  "\
+"
+  (concat "  "
+          "{%l, %c} "
+          "\u1d16\u1d25\u1d16 "
+          "\u25a0\u25a0\u25a0\u25a0\u25a0\u25a0\u25ba"
+          " %p"
+          )
+)
+
+
+
+
+
+
+
+
 ;; Main Call.
 
 (defun rabbit/render-content ()
@@ -307,9 +328,10 @@ Concat all contents.
 	(rabbit/render-buffer-name-format)
 	(rabbit/render-major-mode-format)
 	(rabbit/render-minor-mode-format)
+        (rabbit/render-scroller-format)
 	))
 
-
+a
 (defun rabbit/main-mode-line ()
   "\
 Change mode line format.
@@ -373,9 +395,6 @@ Change mode line format.
 
 
 
-;;(setq fill-num t)
-;;(print mode-line-process)
-
 (provide 'mode-line-format)
 
-;;; rabbit-mode-line ends here
+;;; rabbit-mode-line.el ends here
