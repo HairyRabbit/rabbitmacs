@@ -331,70 +331,22 @@ Concat all contents.
         (rabbit/render-scroller-format)
 	))
 
-a
+
 (defun rabbit/main-mode-line ()
   "\
 Change mode line format.
 "
+  (interactive)
   (setq mode-line-format
 	'("%e" (:eval (rabbit/render-content)))))
 
 (rabbit/main-mode-line)
 
-(set-face-attribute 'mode-line nil
-		    :background "#000F14"
-		    :foreground "#d5d5ff"
-		    :box nil
-		    :height 100
-		    )
 
 
 
 
-(set-background-color "#000f14")
-(set-cursor-color "#81618A")
-(set-face-attribute 'font-lock-function-name-face nil
-		    :foreground "#d5d5ff"
-		    :weight 'bold
-		    ;; pink "#81618A"
-		    )
-(set-face-attribute 'font-lock-keyword-face nil
-		    :foreground "#81618A"
-		    ;;:weight 'bold
-		    ) ;;#2B687B ;;#BFF8FF
-(set-face-attribute 'font-lock-comment-face nil
-		    :foreground "#888"
-		    :background nil)
-(set-face-attribute 'font-lock-comment-delimiter-face nil
-		    :foreground "#555"
-		    :background nil)
-(set-face-attribute 'font-lock-variable-name-face nil
-		    :foreground "#d5d5ff"
-		    )
-(set-face-attribute 'font-lock-string-face nil
-		    :foreground "#e85085" ;;"#e85085" ;; "#BC4545"
-		    ;;:height 136
-		    ;; pink "#81618A"
-		    )
-(set-face-attribute 'font-lock-builtin-face nil
-		    :foreground "#B97CF9"
-		    )
 
-(set-face-attribute 'font-lock-constant-face nil
-		    :foreground "#9947EF"
-		    )
-
-(set-face-attribute 'font-lock-type-face nil
-		    :foreground "#d5d5ff"
-		    )
-
-(set-face-attribute 'font-lock-warning-face nil
-		    :foreground "#d5d5ff"
-		    )
-
-
-
-
-(provide 'mode-line-format)
+(provide 'rabbit-mode-line)
 
 ;;; rabbit-mode-line.el ends here
